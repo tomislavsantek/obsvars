@@ -1,0 +1,35 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Latest round stats{% endblock %}
+
+{% block body %}
+    <h1>Latest round results</h1>
+
+    <table class="table">
+        <thead>
+        <tr>
+            <th>Id</th>
+            <th>Player1</th>
+            <th>Player1Score</th>
+            <th>Player2Score</th>
+            <th>Player2</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% if round %}
+            <tr>
+                <td>{{ round.id }}</td>
+                <td><a href="{{ path('round_latest_player1') }}">{{ round.Player1 }}</a></td>
+                <td><a href="{{ path('round_latest_player1_score') }}">{{ round.Player1Score }}</a></td>
+                <td><a href="{{ path('round_latest_player2_score') }}">{{ round.Player2Score }}</a></td>
+                <td><a href="{{ path('round_latest_player2') }}">{{ round.Player2 }}</a></td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="4">no records found</td>
+            </tr>
+        {% endif %}
+        </tbody>
+    </table>
+
+{% endblock %}

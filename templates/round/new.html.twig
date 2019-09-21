@@ -1,0 +1,11 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}New Round{% endblock %}
+
+{% block body %}
+    <h1>Create new Round</h1>
+
+    {{ include('round/_form.html.twig') }}
+
+    <a href="{{ path('round_index') }}">back to list</a>
+{% endblock %}

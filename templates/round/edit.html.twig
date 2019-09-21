@@ -1,0 +1,13 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Edit Round{% endblock %}
+
+{% block body %}
+    <h1>Edit Round</h1>
+
+    {{ include('round/_form.html.twig', {'button_label': 'Update'}) }}
+
+    <a href="{{ path('round_index') }}">back to list</a>
+
+    {{ include('round/_delete_form.html.twig') }}
+{% endblock %}

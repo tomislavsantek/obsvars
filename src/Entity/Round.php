@@ -22,7 +22,7 @@ class Round
     private $Player1;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Player")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Player", inversedBy="rounds")
      */
     private $Player2;
 

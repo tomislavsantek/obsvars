@@ -1,0 +1,41 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Round index{% endblock %}
+
+{% block body %}
+    <h1>Round index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Player1</th>
+                <th>Player1Score</th>
+                <th>Player2</th>
+                <th>Player2Score</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for round in rounds %}
+            <tr>
+                <td>{{ round.id }}</td>
+                <td>{{ round.Player1 }}</td>
+                <td>{{ round.Player1Score }}</td>
+                <td>{{ round.Player2 }}</td>
+                <td>{{ round.Player2Score }}</td>
+                <td>
+                    <a href="{{ path('round_show', {'id': round.id}) }}">show</a>
+                    <a href="{{ path('round_edit', {'id': round.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="4">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('round_new') }}">Create new</a>
+{% endblock %}
