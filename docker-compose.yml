@@ -1,0 +1,19 @@
+###############################################################################
+#                          Generated on phpdocker.io                          #
+###############################################################################
+version: "3.1"
+services:
+
+    mysql:
+      image: mysql:8.0
+      container_name: obsvars-mysql
+      working_dir: /application
+      volumes:
+        - .:/application
+      environment:
+        - MYSQL_ROOT_PASSWORD=root
+        - MYSQL_DATABASE=obsvars
+        - MYSQL_USER=obsvars
+        - MYSQL_PASSWORD=obsvars
+      ports:
+        - "8082:3306"
