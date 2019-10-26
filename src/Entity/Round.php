@@ -9,6 +9,17 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Round
 {
+
+    const STATE_PENDING = 0;
+    const STATE_IN_PROGRESS = 20;
+    const STATE_COMPLETE = 30;
+
+    private $stateLabels = [
+        self::STATE_PENDING => 'pending',
+        self::STATE_IN_PROGRESS => 'in_progress',
+        self::STATE_COMPLETE => 'complete'
+    ];
+
     /**
      * @ORM\Id()
      * @ORM\GeneratedValue()
@@ -17,24 +28,30 @@ class Round
     private $id;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Player", inversedBy="rounds")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Player")
      */
     private $Player1;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Player", inversedBy="rounds")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Player")
      */
     private $Player2;
 
     /**
      * @ORM\Column(type="integer")
      */
-    private $Player1Score;
+    private $Player1Score = 0;
 
     /**
      * @ORM\Column(type="integer")
      */
-    private $Player2Score;
+    private $Player2Score = 0;
+
+    /**
+     * @ORM\Column(type="integer", options={"default": "0"})
+     */
+    private $state = self::STATE_PENDING;
+
 
     public function getId(): ?int
     {
@@ -87,5 +104,24 @@ class Round
         $this->Player2Score = $Player2Score;
 
         return $this;
+    }
+
+    public function getState(): ?int
+    {
+        return $this->state;
+    }
+
+    public function setState(int $state): self
+    {
+        $this->state = $state;
+        return $this;
+    }
+
+    public function getStateLabel(): ?string {
+        return $this->stateLabels[$this->state];
+    }
+
+    public function getAvailableStates(){
+        return $this->stateLabels;
     }
 }

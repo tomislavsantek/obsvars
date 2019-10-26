@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Player;
 use App\Entity\Round;
 use App\Form\RoundType;
 use App\Repository\RoundRepository;
@@ -16,12 +17,26 @@ use Symfony\Component\Routing\Annotation\Route;
 class RoundController extends AbstractController
 {
     /**
-     * @Route("/", name="round_index", methods={"GET"})
+     * @Route("/", name="round_index", methods={"GET", "POST"})
      */
-    public function index(RoundRepository $roundRepository): Response
+    public function index(RoundRepository $roundRepository, Request $request): Response
     {
+        $round = new Round();
+        $form = $this->createForm(RoundType::class, $round);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $entityManager = $this->getDoctrine()->getManager();
+            $entityManager->persist($round);
+            $entityManager->flush();
+
+            return $this->redirectToRoute('round_index');
+        }
+
         return $this->render('round/index.html.twig', [
-            'rounds' => $roundRepository->findAll(),
+            'round' => $round,
+            'form' => $form->createView(),
+            'rounds' => $roundRepository->findAllOrderedByStateAndId(),
         ]);
     }
 
@@ -75,6 +90,45 @@ class RoundController extends AbstractController
         ]);
     }
 
+    /**
+     * @Route("/{id}/set-state/{newState}", name="round_set_state", methods={"GET"})
+     */
+    public function updateRoundState(Round $round, $newState): Response
+    {
+        $round->setState($newState);
+        $entityManager = $this->getDoctrine()->getManager();
+
+        if($newState == Round::STATE_IN_PROGRESS || $newState == Round::STATE_COMPLETE){
+            $entityManager->getRepository(Round::class)
+                ->finalizePreviousRounds($round);
+        }
+        if($newState == Round::STATE_IN_PROGRESS){
+            $entityManager->getRepository(Round::class)
+                ->resetUpcomingRounds($round);
+        }
+        $entityManager->persist($round);
+        $entityManager->flush();
+
+        return $this->redirectToRoute('round_index');
+    }
+
+    /**
+     * @Route("/{id}/set-score/{player}/{score}", name="round_set_score", methods={"GET"})
+     */
+    public function updateRoundScore(Round $round, int $player, $score): Response
+    {
+        if($player == 1){ // TODO: Add more security here
+            $round->setPlayer1Score($score);
+        } else {
+            $round->setPlayer2Score($score);
+        }
+
+        $entityManager = $this->getDoctrine()->getManager();
+        $entityManager->persist($round);
+        $entityManager->flush();
+
+        return $this->redirectToRoute('round_index');
+    }
 
 
     /**

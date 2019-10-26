@@ -16,12 +16,27 @@ use Symfony\Component\Routing\Annotation\Route;
 class PlayerController extends AbstractController
 {
     /**
-     * @Route("/", name="player_index", methods={"GET"})
+     * @Route("/", name="player_index", methods={"GET","POST"})
      */
-    public function index(PlayerRepository $playerRepository): Response
+    public function index(PlayerRepository $playerRepository, Request $request): Response
     {
+        $player = new Player();
+        $form = $this->createForm(PlayerType::class, $player);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $entityManager = $this->getDoctrine()->getManager();
+            $entityManager->persist($player);
+            $entityManager->flush();
+
+            return $this->redirectToRoute('player_index');
+        }
+
+
         return $this->render('player/index.html.twig', [
             'players' => $playerRepository->findAll(),
+            'player' => $player,
+            'form' => $form->createView(),
         ]);
     }
 

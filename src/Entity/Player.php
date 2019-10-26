@@ -23,10 +23,6 @@ class Player
      */
     private $name;
 
-    /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Round", mappedBy="Player1")
-     */
-    private $rounds;
 
     public function __construct()
     {
@@ -55,34 +51,4 @@ class Player
         return $this;
     }
 
-    /**
-     * @return Collection|Round[]
-     */
-    public function getRounds(): Collection
-    {
-        return $this->rounds;
-    }
-
-    public function addRound(Round $round): self
-    {
-        if (!$this->rounds->contains($round)) {
-            $this->rounds[] = $round;
-            $round->setPlayer1($this);
-        }
-
-        return $this;
-    }
-
-    public function removeRound(Round $round): self
-    {
-        if ($this->rounds->contains($round)) {
-            $this->rounds->removeElement($round);
-            // set the owning side to null (unless already changed)
-            if ($round->getPlayer1() === $this) {
-                $round->setPlayer1(null);
-            }
-        }
-
-        return $this;
-    }
 }

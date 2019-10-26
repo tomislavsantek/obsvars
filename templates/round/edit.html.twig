@@ -3,6 +3,8 @@
 {% block title %}Edit Round{% endblock %}
 
 {% block body %}
+    {% include 'global/menu.html.twig' %}
+
     <h1>Edit Round</h1>
 
     {{ include('round/_form.html.twig', {'button_label': 'Update'}) }}

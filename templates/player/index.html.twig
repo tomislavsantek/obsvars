@@ -3,10 +3,12 @@
 {% block title %}Player index{% endblock %}
 
 {% block body %}
-    <h1>Player index</h1>
+    {% include 'global/menu.html.twig' %}
+
+    {{ include('player/_form.html.twig') }}
 
     <table class="table">
-        <thead>
+        <thead class="thead-dark">
             <tr>
                 <th>Id</th>
                 <th>Name</th>
@@ -19,8 +21,8 @@
                 <td>{{ player.id }}</td>
                 <td>{{ player.name }}</td>
                 <td>
-                    <a href="{{ path('player_show', {'id': player.id}) }}">show</a>
-                    <a href="{{ path('player_edit', {'id': player.id}) }}">edit</a>
+                    <a class="btn btn-primary btn-block" href="{{ path('player_edit', {'id': player.id}) }}">edit</a>
+                    {% include 'player/_delete_form.html.twig' with { 'player': player } only %}
                 </td>
             </tr>
         {% else %}
@@ -30,6 +32,4 @@
         {% endfor %}
         </tbody>
     </table>
-
-    <a href="{{ path('player_new') }}">Create new</a>
 {% endblock %}

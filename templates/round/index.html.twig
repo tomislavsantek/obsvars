@@ -3,30 +3,49 @@
 {% block title %}Round index{% endblock %}
 
 {% block body %}
-    <h1>Round index</h1>
+    {% include 'global/menu.html.twig' %}
 
-    <table class="table">
-        <thead>
+    {{ include('round/_form.html.twig') }}
+
+    <table class="table table-hover">
+        <thead class="thead-dark">
             <tr>
                 <th>Id</th>
                 <th>Player1</th>
-                <th>Player1Score</th>
+                <th colspan="2">P1 Score</th>
+                <th colspan="2">P2 Score</th>
                 <th>Player2</th>
-                <th>Player2Score</th>
+                <th>State</th>
                 <th>actions</th>
             </tr>
         </thead>
         <tbody>
         {% for round in rounds %}
             <tr>
-                <td>{{ round.id }}</td>
-                <td>{{ round.Player1 }}</td>
-                <td>{{ round.Player1Score }}</td>
-                <td>{{ round.Player2 }}</td>
-                <td>{{ round.Player2Score }}</td>
-                <td>
-                    <a href="{{ path('round_show', {'id': round.id}) }}">show</a>
-                    <a href="{{ path('round_edit', {'id': round.id}) }}">edit</a>
+                <td width="10%">{{ round.id }}</td>
+                <td width="25%">{{ round.Player1 }}</td>
+                <td width="5%">
+                    <a class="btn btn-success btn-block" href="{{ path('round_set_score', {'id':round.id, 'player':1, 'score': round.Player1Score+1}) }}">+</a>
+                    <a class="btn btn-danger btn-block" href="{{ path('round_set_score', {'id':round.id, 'player':1, 'score': round.Player1Score-1}) }}">-</a>
+                </td>
+                <td width="5%">{{ round.Player1Score }}</td>
+                <td width="5%">{{ round.Player2Score }}</td>
+                <td width="5%">
+                    <a class="btn btn-success btn-block" href="{{ path('round_set_score', {'id':round.id, 'player':2, 'score': round.Player2Score+1}) }}">+</a>
+                    <a class="btn btn-danger btn-block" href="{{ path('round_set_score', {'id':round.id, 'player':2, 'score': round.Player2Score-1}) }}">-</a>
+                </td>
+                <td width="25%">{{ round.Player2 }}</td>
+                <td width="10%">
+                    {% for key,state in round.getAvailableStates %}
+                    <a
+                        class="btn btn-block {% if state == round.getStateLabel %}btn-success disabled{% else %}btn-secondary{% endif %}"
+                        href="{% if state == round.getStateLabel %}#{% else %}{{ path('round_set_state', {'id': round.id, 'newState': key}) }}{% endif %}"
+                        role="button">{{ state }}</a>
+                {% endfor %}
+                </td>
+                <td width="10%">
+                    <a class="btn btn-primary btn-block" href="{{ path('round_edit', {'id': round.id}) }}">edit</a>
+                    {{ include('round/_delete_form.html.twig') }}
                 </td>
             </tr>
         {% else %}

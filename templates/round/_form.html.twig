@@ -1,4 +1,21 @@
 {{ form_start(form) }}
+<table class="table table-hover">
+    <thead class="thead-light">
+    <tr>
+        <th>Player1</th>
+        <th>Player2</th>
+        <th>actions</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+        <td>{{ form_widget(form.Player1) }}</td>
+        <td>{{ form_widget(form.Player2) }}</td>
+        <td><button class="btn btn-success">{{ button_label|default('Add new round') }}</button></td>
+    </tr>
+    </tbody>
+</table>
+
     {{ form_widget(form) }}
-    <button class="btn">{{ button_label|default('Save') }}</button>
+
 {{ form_end(form) }}

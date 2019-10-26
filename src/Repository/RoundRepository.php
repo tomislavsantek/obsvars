@@ -19,6 +19,57 @@ class RoundRepository extends ServiceEntityRepository
         parent::__construct($registry, Round::class);
     }
 
+    /**
+     * Gets the rounds sorted by their execution schedule (upcoming first, finished last)
+     * @return Round[]
+     */
+    public function findAllOrderedByStateAndId(){
+        return $this->createQueryBuilder('r')
+            ->orderBy('r.id', 'DESC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * @param Round $round
+     * @throws \Doctrine\ORM\ORMException
+     * @throws \Doctrine\ORM\OptimisticLockException
+     */
+    public function finalizePreviousRounds(Round $r){
+        $previousRounds = $this->createQueryBuilder('r')
+            ->where("r.id < :id")
+            ->setParameter('id', $r->getId())
+            ->getQuery()
+            ->getResult();
+
+        foreach($previousRounds as $round){
+            /** @var Round $round */
+            $round->setState(Round::STATE_COMPLETE);
+            $this->getEntityManager()->persist($round);
+        }
+        return $this->getEntityManager()->flush();
+    }
+
+    /**
+     * @param Round $r
+     * @throws \Doctrine\ORM\ORMException
+     * @throws \Doctrine\ORM\OptimisticLockException
+     */
+    public function resetUpcomingRounds(Round $r){
+        $upcomingRounds = $this->createQueryBuilder('r')
+            ->where('r.id > :id')
+            ->setParameter('id', $r->getId())
+            ->getQuery()
+            ->getResult();
+
+        foreach($upcomingRounds as $round){
+            /** @var Round $round */
+            $round->setState(Round::STATE_PENDING);
+            $this->getEntityManager()->persist($round);
+        }
+        return $this->getEntityManager()->flush();
+    }
+
     // /**
     //  * @return Round[] Returns an array of Round objects
     //  */

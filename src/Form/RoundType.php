@@ -12,8 +12,6 @@ class RoundType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('Player1Score')
-            ->add('Player2Score')
             ->add('Player1')
             ->add('Player2')
         ;

@@ -3,6 +3,8 @@
 {% block title %}New Round{% endblock %}
 
 {% block body %}
+    {% include 'global/menu.html.twig' %}
+
     <h1>Create new Round</h1>
 
     {{ include('round/_form.html.twig') }}
