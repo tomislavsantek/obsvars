@@ -20,6 +20,50 @@ class RoundRepository extends ServiceEntityRepository
     }
 
     /**
+     * @return mixed
+     * @throws \Doctrine\ORM\NoResultException
+     * @throws \Doctrine\ORM\NonUniqueResultException
+     */
+    public function findUpcomingRound(){
+        return $this->createQueryBuilder('r')
+            ->where('r.state = :state')
+            ->setParameter('state', Round::STATE_PENDING)
+            ->orderBy('r.id', 'ASC')
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getSingleResult();
+    }
+
+    /**
+     * @return mixed
+     * @throws \Doctrine\ORM\NoResultException
+     * @throws \Doctrine\ORM\NonUniqueResultException
+     */
+    public function findCurrentRound(){
+        return $this->createQueryBuilder('r')
+            ->where('r.state = :state')
+            ->setParameter('state', Round::STATE_IN_PROGRESS)
+            ->orderBy('r.id', 'ASC')
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getSingleResult();
+    }
+
+    /**
+     * @return Round[]
+     */
+    public function findCompleteRounds(){
+        return $this->createQueryBuilder('r')
+            ->where('r.state = :state')
+            ->setParameter('state', Round::STATE_COMPLETE)
+            ->orderBy('r.id', 'DESC')
+            ->getQuery()
+            ->getResult();
+    }
+
+
+
+    /**
      * Gets the rounds sorted by their execution schedule (upcoming first, finished last)
      * @return Round[]
      */

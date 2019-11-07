@@ -124,4 +124,14 @@ class Round
     public function getAvailableStates(){
         return $this->stateLabels;
     }
+
+    // TODO: Needed for converting the object to JSON; Implement a serializer instead
+    public function __toArray(){
+        return [
+            'player1' => $this->getPlayer1()->getName(),
+            'player1Score' => $this->getPlayer1Score(),
+            'player2' => $this->getPlayer2()->getName(),
+            'player2Score' => $this->getPlayer2Score()
+        ];
+    }
 }

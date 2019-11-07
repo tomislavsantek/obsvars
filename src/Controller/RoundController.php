@@ -46,17 +46,43 @@ class RoundController extends AbstractController
     public function latest(RoundRepository $roundRepository): Response
     {
         return $this->render('round/latest.html.twig', [
-            'round' => $roundRepository->findOneBy([], ['id' => 'DESC']),
+            'round' => $roundRepository->findOneBy(['state' => Round::STATE_IN_PROGRESS], ['id' => 'DESC']),
         ]);
     }
+
+    /**
+     * @Route("/export", name="export", methods={"GET"})
+     */
+    public function export(RoundRepository $roundRepository): Response
+    {
+        $upcoming = $roundRepository->findUpcomingRound();
+        $current = $roundRepository->findCurrentRound();
+        $completeObjects = $roundRepository->findCompleteRounds();
+        $complete = [];
+
+        foreach($completeObjects as $round){
+            $complete[] = $round->__toArray();
+        }
+
+        $result = [
+            'upcoming' => $upcoming->__toArray(),
+            'current' => $current->__toArray(),
+            'complete' => $complete
+        ];
+
+        return $this->json($result);
+    }
+
 
     /**
      * @Route("/latest/player1", name="round_latest_player1", methods={"GET"})
      */
     public function latestPlayer1(RoundRepository $roundRepository): Response
     {
+        $round = $roundRepository->findOneBy(['state' => Round::STATE_IN_PROGRESS], ['id' => 'DESC']);
+        $field = $round ? $round->getPlayer1() : '';
         return $this->render('round/latest_single_field.html.twig', [
-            'field' => $roundRepository->findOneBy([], ['id' => 'DESC'])->getPlayer1(),
+            'field' => $field
         ]);
     }
 
@@ -65,8 +91,10 @@ class RoundController extends AbstractController
      */
     public function latestPlayer2(RoundRepository $roundRepository): Response
     {
+        $round = $roundRepository->findOneBy(['state' => Round::STATE_IN_PROGRESS], ['id' => 'DESC']);
+        $field = $round ? $round->getPlayer2() : '';
         return $this->render('round/latest_single_field.html.twig', [
-            'field' => $roundRepository->findOneBy([], ['id' => 'DESC'])->getPlayer2(),
+            'field' => $field,
         ]);
     }
 
@@ -75,8 +103,10 @@ class RoundController extends AbstractController
      */
     public function latestPlayer1Score(RoundRepository $roundRepository): Response
     {
+        $round = $roundRepository->findOneBy(['state' => Round::STATE_IN_PROGRESS], ['id' => 'DESC']);
+        $field = $round ? $round->getPlayer1Score() : '';
         return $this->render('round/latest_single_field.html.twig', [
-            'field' => $roundRepository->findOneBy([], ['id' => 'DESC'])->getPlayer1Score(),
+            'field' => $field
         ]);
     }
 
@@ -85,8 +115,10 @@ class RoundController extends AbstractController
      */
     public function latestPlayer2Score(RoundRepository $roundRepository): Response
     {
+        $round = $roundRepository->findOneBy(['state' => Round::STATE_IN_PROGRESS], ['id' => 'DESC']);
+        $field = $round ? $round->getPlayer2Score() : '';
         return $this->render('round/latest_single_field.html.twig', [
-            'field' => $roundRepository->findOneBy([], ['id' => 'DESC'])->getPlayer2Score(),
+            'field' => $field
         ]);
     }
 
