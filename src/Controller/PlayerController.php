@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Player;
+use App\Entity\Round;
 use App\Form\PlayerType;
 use App\Repository\PlayerRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -100,6 +101,7 @@ class PlayerController extends AbstractController
     {
         if ($this->isCsrfTokenValid('delete'.$player->getId(), $request->request->get('_token'))) {
             $entityManager = $this->getDoctrine()->getManager();
+            $entityManager->getRepository(Round::class)->deleteRoundsByPlayer($player);
             $entityManager->remove($player);
             $entityManager->flush();
         }

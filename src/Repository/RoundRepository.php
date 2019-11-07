@@ -2,9 +2,11 @@
 
 namespace App\Repository;
 
+use App\Entity\Player;
 use App\Entity\Round;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
+use Doctrine\ORM\NoResultException;
 
 /**
  * @method Round|null find($id, $lockMode = null, $lockVersion = null)
@@ -20,33 +22,39 @@ class RoundRepository extends ServiceEntityRepository
     }
 
     /**
-     * @return mixed
-     * @throws \Doctrine\ORM\NoResultException
+     * @return Round|mixed
      * @throws \Doctrine\ORM\NonUniqueResultException
      */
     public function findUpcomingRound(){
-        return $this->createQueryBuilder('r')
-            ->where('r.state = :state')
-            ->setParameter('state', Round::STATE_PENDING)
-            ->orderBy('r.id', 'ASC')
-            ->setMaxResults(1)
-            ->getQuery()
-            ->getSingleResult();
+        try{
+            return $this->createQueryBuilder('r')
+                ->where('r.state = :state')
+                ->setParameter('state', Round::STATE_PENDING)
+                ->orderBy('r.id', 'ASC')
+                ->setMaxResults(1)
+                ->getQuery()
+                ->getSingleResult();
+        } catch (NoResultException $e){
+            return new Round();
+        }
     }
 
     /**
-     * @return mixed
-     * @throws \Doctrine\ORM\NoResultException
+     * @return Round|mixed
      * @throws \Doctrine\ORM\NonUniqueResultException
      */
     public function findCurrentRound(){
-        return $this->createQueryBuilder('r')
-            ->where('r.state = :state')
-            ->setParameter('state', Round::STATE_IN_PROGRESS)
-            ->orderBy('r.id', 'ASC')
-            ->setMaxResults(1)
-            ->getQuery()
-            ->getSingleResult();
+        try{
+            return $this->createQueryBuilder('r')
+                ->where('r.state = :state')
+                ->setParameter('state', Round::STATE_IN_PROGRESS)
+                ->orderBy('r.id', 'ASC')
+                ->setMaxResults(1)
+                ->getQuery()
+                ->getSingleResult();
+        } catch (NoResultException $e){
+            return new Round();
+        }
     }
 
     /**
@@ -112,6 +120,21 @@ class RoundRepository extends ServiceEntityRepository
             $this->getEntityManager()->persist($round);
         }
         return $this->getEntityManager()->flush();
+    }
+
+    /**
+     * Deletes all rounds that have specified player
+     * @param Player $player
+     * @return mixed
+     */
+    public function deleteRoundsByPlayer(Player $player){
+        return $this->createQueryBuilder('r')
+            ->delete()
+            ->where('r.Player1 = :player')
+            ->orWhere('r.Player2 = :player')
+            ->setParameter('player', $player)
+            ->getQuery()
+            ->execute();
     }
 
     // /**

@@ -162,6 +162,24 @@ class RoundController extends AbstractController
         return $this->redirectToRoute('round_index');
     }
 
+    /**
+     * @Route("/{id}/reverse", name="round_reverse", methods={"GET"})
+     */
+    public function reverseRound(Round $round): Response
+    {
+        $oldRound = clone $round;
+        $round->setPlayer1($oldRound->getPlayer2())
+            ->setPlayer1Score($oldRound->getPlayer2Score())
+            ->setPlayer2($oldRound->getPlayer1())
+            ->setPlayer2Score($oldRound->getPlayer1Score());
+
+        $entityManager = $this->getDoctrine()->getManager();
+        $entityManager->persist($round);
+        $entityManager->flush();
+
+        return $this->redirectToRoute('round_index');
+    }
+
 
     /**
      * @Route("/new", name="round_new", methods={"GET","POST"})

@@ -11,8 +11,8 @@
         <thead class="thead-dark">
             <tr>
                 <th>Id</th>
-                <th>Player1</th>
-                <th colspan="2">P1 Score</th>
+                <th class="text-right">Player1</th>
+                <th colspan="2" class="text-right">P1 Score</th>
                 <th colspan="2">P2 Score</th>
                 <th>Player2</th>
                 <th>State</th>
@@ -22,19 +22,19 @@
         <tbody>
         {% for round in rounds %}
             <tr>
-                <td width="10%">{{ round.id }}</td>
-                <td width="25%">{{ round.Player1 }}</td>
-                <td width="5%">
+                <td width="10%" class="align-middle">{{ round.id }}</td>
+                <td width="25%" class="text-right align-middle"><h4>{{ round.Player1 }}</h4></td>
+                <td width="5%" class="align-middle">
                     <a class="btn btn-success btn-block" href="{{ path('round_set_score', {'id':round.id, 'player':1, 'score': round.Player1Score+1}) }}">+</a>
                     <a class="btn btn-danger btn-block" href="{{ path('round_set_score', {'id':round.id, 'player':1, 'score': round.Player1Score-1}) }}">-</a>
                 </td>
-                <td width="5%">{{ round.Player1Score }}</td>
-                <td width="5%">{{ round.Player2Score }}</td>
-                <td width="5%">
+                <td width="5%" class="text-right align-middle"><h2>{{ round.Player1Score }}</h2></td>
+                <td width="5%" class="align-middle"><h2>{{ round.Player2Score }}</h2></td>
+                <td width="5%" class="align-middle">
                     <a class="btn btn-success btn-block" href="{{ path('round_set_score', {'id':round.id, 'player':2, 'score': round.Player2Score+1}) }}">+</a>
                     <a class="btn btn-danger btn-block" href="{{ path('round_set_score', {'id':round.id, 'player':2, 'score': round.Player2Score-1}) }}">-</a>
                 </td>
-                <td width="25%">{{ round.Player2 }}</td>
+                <td width="25%" class="align-middle"><h4>{{ round.Player2 }}</h4></td>
                 <td width="10%">
                     {% for key,state in round.getAvailableStates %}
                     <a
@@ -43,8 +43,9 @@
                         role="button">{{ state }}</a>
                 {% endfor %}
                 </td>
-                <td width="10%">
+                <td width="10%" class="align-middle">
                     <a class="btn btn-primary btn-block" href="{{ path('round_edit', {'id': round.id}) }}">edit</a>
+                    <a class="btn btn-warning btn-block" href="{{ path('round_reverse', {'id': round.id}) }}">reverse</a>
                     {{ include('round/_delete_form.html.twig') }}
                 </td>
             </tr>
@@ -56,5 +57,4 @@
         </tbody>
     </table>
 
-    <a href="{{ path('round_new') }}">Create new</a>
 {% endblock %}

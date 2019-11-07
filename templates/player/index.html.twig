@@ -18,11 +18,13 @@
         <tbody>
         {% for player in players %}
             <tr>
-                <td>{{ player.id }}</td>
-                <td>{{ player.name }}</td>
-                <td>
-                    <a class="btn btn-primary btn-block" href="{{ path('player_edit', {'id': player.id}) }}">edit</a>
-                    {% include 'player/_delete_form.html.twig' with { 'player': player } only %}
+                <td width="10%">{{ player.id }}</td>
+                <td width="70%">{{ player.name }}</td>
+                <td width="20%">
+                    <div class="btn-group" role="group" aria-label="Player actions">
+                        <a class="btn btn-primary" href="{{ path('player_edit', {'id': player.id}) }}">edit</a>
+                        {% include 'player/_delete_form.html.twig' with { 'player': player } only %}
+                    </div>
                 </td>
             </tr>
         {% else %}
@@ -32,4 +34,16 @@
         {% endfor %}
         </tbody>
     </table>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+
+    <script type="text/javascript">
+
+    window.onload = function() {
+     let input = document.getElementById("player_name").focus();
+    }
+    </script>
+
 {% endblock %}
